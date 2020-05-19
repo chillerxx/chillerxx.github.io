@@ -243,7 +243,6 @@ a:hover {
   width: 100%;
   text-align: center;
   line-height: 4rem;
-  padding-top: 2em;
 }
 @charset "utf-8";
 
@@ -735,7 +734,6 @@ header label {
   color: #fff;
 }
 .post-content {
-  padding-top: 2rem;
   text-align: justify;
 }
 .post-content h2,
@@ -1021,6 +1019,8 @@ header label {
   padding: 1rem 0 1rem;
   display: flex;
   justify-content: space-between;
+  font-size: 16px;
+  font-weight: 500;
 }
 .post-nav:before,
 .post-nav:after {

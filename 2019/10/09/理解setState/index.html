@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="chiller">
+
+
+
+
+
+<title>🌸 理解setState | Chiller&#39;s blog</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Chiller&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Chiller&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">🌸 理解setState</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: &nbsp; <a href="#">2019-10-09&nbsp;
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="调用流程图"><a href="#调用流程图" class="headerlink" title="调用流程图"></a>调用流程图</h3><p><img src="../image/setState.png" alt="setState"></p>
+<h3 id="详细方法解析"><a href="#详细方法解析" class="headerlink" title="详细方法解析"></a>详细方法解析</h3><h4 id="setState"><a href="#setState" class="headerlink" title="setState"></a>setState</h4><p>ReactBaseClassses.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ReactComponent.prototype.setState = <span class="function"><span class="keyword">function</span> (<span class="params">partialState, callback</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//  将setState事务放进队列中</span></span><br><span class="line">  <span class="keyword">this</span>.updater.enqueueSetState(<span class="keyword">this</span>, partialState);</span><br><span class="line">  <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">    <span class="keyword">this</span>.updater.enqueueCallback(<span class="keyword">this</span>, callback, <span class="string">'setState'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="enqueueSetState"><a href="#enqueueSetState" class="headerlink" title="enqueueSetState"></a>enqueueSetState</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">enqueueSetState: <span class="function"><span class="keyword">function</span> (<span class="params">publicInstance, partialState</span>) </span>&#123;</span><br><span class="line">   <span class="comment">// 获取当前组件的instance</span></span><br><span class="line">  <span class="keyword">var</span> internalInstance = getInternalInstanceReadyForUpdate(publicInstance, <span class="string">'setState'</span>);</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 将要更新的state放入一个数组里</span></span><br><span class="line">   <span class="keyword">var</span> queue = internalInstance._pendingStateQueue || (internalInstance._pendingStateQueue = []);</span><br><span class="line">  queue.push(partialState);</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  将要更新的component instance也放在一个队列里</span></span><br><span class="line">  enqueueUpdate(internalInstance);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="enqueueUpdate"><a href="#enqueueUpdate" class="headerlink" title="enqueueUpdate"></a>enqueueUpdate</h4><p>ReactUpdates.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">enqueueUpdate</span>(<span class="params">component</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 如果没有处于批量创建/更新组件的阶段，则处理update state事务</span></span><br><span class="line">  <span class="keyword">if</span> (!batchingStrategy.isBatchingUpdates) &#123;</span><br><span class="line">    batchingStrategy.batchedUpdates(enqueueUpdate, component);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 如果正处于批量创建/更新组件的过程，将当前的组件放在dirtyComponents数组中</span></span><br><span class="line">  dirtyComponents.push(component);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="batchingStrategy"><a href="#batchingStrategy" class="headerlink" title="batchingStrategy"></a>batchingStrategy</h4><p>ReactDefaultBatchingStrategy.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ReactDefaultBatchingStrategy = &#123;</span><br><span class="line">  <span class="comment">// 用于标记当前是否出于批量更新</span></span><br><span class="line">  isBatchingUpdates: <span class="literal">false</span>,</span><br><span class="line">  <span class="comment">// 当调用这个方法时，正式开始批量更新</span></span><br><span class="line">  batchedUpdates: <span class="function"><span class="keyword">function</span> (<span class="params">callback, a, b, c, d, e</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> alreadyBatchingUpdates = ReactDefaultBatchingStrategy.isBatchingUpdates;</span><br><span class="line"></span><br><span class="line">    ReactDefaultBatchingStrategy.isBatchingUpdates = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果当前事务正在更新过程在中，则调用callback，既enqueueUpdate</span></span><br><span class="line">    <span class="keyword">if</span> (alreadyBatchingUpdates) &#123;</span><br><span class="line">      <span class="keyword">return</span> callback(a, b, c, d, e);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 否则执行更新事务</span></span><br><span class="line">      <span class="keyword">return</span> transaction.perform(callback, <span class="literal">null</span>, a, b, c, d, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>🌟batchedUpdates是一个事务  有两个wrapper</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> RESET_BATCHED_UPDATES = &#123;</span><br><span class="line">  initialize: emptyFunction,</span><br><span class="line">  close: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    ReactDefaultBatchingStrategy.isBatchingUpdates = <span class="literal">false</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> FLUSH_BATCHED_UPDATES = &#123;</span><br><span class="line">  initialize: emptyFunction,</span><br><span class="line">  close: ReactUpdates.flushBatchedUpdates.bind(ReactUpdates),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> TRANSACTION_WRAPPERS = [FLUSH_BATCHED_UPDATES, RESET_BATCHED_UPDATES];</span><br></pre></td></tr></table></figure>
+
+<h4 id="flushBatchedUpdates"><a href="#flushBatchedUpdates" class="headerlink" title="flushBatchedUpdates"></a>flushBatchedUpdates</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> flushBatchedUpdates = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (dirtyComponents.length || asapEnqueued) &#123;</span><br><span class="line">    <span class="keyword">if</span> (dirtyComponents.length) &#123;</span><br><span class="line">      <span class="comment">// 从缓存池中获取ReactUpdatesFlushTransaction对象</span></span><br><span class="line">      <span class="keyword">var</span> transaction = ReactUpdatesFlushTransaction.getPooled();</span><br><span class="line">      <span class="comment">// 调用runBatchedUpdates</span></span><br><span class="line">      transaction.perform(runBatchedUpdates, <span class="literal">null</span>, transaction);</span><br><span class="line">      ReactUpdatesFlushTransaction.release(transaction);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (asapEnqueued) &#123;</span><br><span class="line">      asapEnqueued = <span class="literal">false</span>;</span><br><span class="line">      <span class="keyword">var</span> queue = asapCallbackQueue;</span><br><span class="line">      asapCallbackQueue = CallbackQueue.getPooled();</span><br><span class="line">      queue.notifyAll();</span><br><span class="line">      CallbackQueue.release(queue);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>🌟flushBatchedUpdates是一个事务  有两个wrapper</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">var</span> NESTED_UPDATES = &#123;</span><br><span class="line">  initialize: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.dirtyComponentsLength = dirtyComponents.length;</span><br><span class="line">  &#125;,</span><br><span class="line">  close: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 在批量更新，如果有新的dirtyComponents被push，那么，需要再一次批量更新，从新加入的dirtyComponents开始</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.dirtyComponentsLength !== dirtyComponents.length) &#123;</span><br><span class="line">      dirtyComponents.splice(<span class="number">0</span>, <span class="keyword">this</span>.dirtyComponentsLength);</span><br><span class="line">      flushBatchedUpdates();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      dirtyComponents.length = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> UPDATE_QUEUEING = &#123;</span><br><span class="line">  initialize: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 重置回调队列</span></span><br><span class="line">    <span class="keyword">this</span>.callbackQueue.reset();</span><br><span class="line">  &#125;,</span><br><span class="line">  close: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 执行回调方法</span></span><br><span class="line">    <span class="keyword">this</span>.callbackQueue.notifyAll();</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> TRANSACTION_WRAPPERS = [NESTED_UPDATES, UPDATE_QUEUEING];</span><br></pre></td></tr></table></figure>
+
+<h4 id="runBatchedUpdates"><a href="#runBatchedUpdates" class="headerlink" title="runBatchedUpdates"></a>runBatchedUpdates</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">runBatchedUpdates</span>(<span class="params">transaction</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> len = transaction.dirtyComponentsLength;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 排序，保证 dirtyComponent 从父级到子级的 render 顺序</span></span><br><span class="line">  dirtyComponents.sort(mountOrderComparator);</span><br><span class="line"></span><br><span class="line">  updateBatchNumber++;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">    <span class="keyword">var</span> component = dirtyComponents[i];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取该组件的回调数组</span></span><br><span class="line">    <span class="keyword">var</span> callbacks = component._pendingCallbacks;</span><br><span class="line">    component._pendingCallbacks = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> markerName;</span><br><span class="line">    <span class="keyword">if</span> (ReactFeatureFlags.logTopLevelRenders) &#123;</span><br><span class="line">      <span class="keyword">var</span> namedComponent = component;</span><br><span class="line">      <span class="comment">// Duck type TopLevelWrapper. This is probably always true.</span></span><br><span class="line">      <span class="keyword">if</span> (component._currentElement.type.isReactTopLevelWrapper) &#123;</span><br><span class="line">        namedComponent = component._renderedComponent;</span><br><span class="line">      &#125;</span><br><span class="line">      markerName = <span class="string">'React update: '</span> + namedComponent.getName();</span><br><span class="line">      <span class="built_in">console</span>.time(markerName);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 更新该 dirtyComponent 重点代码</span></span><br><span class="line">    ReactReconciler.performUpdateIfNecessary(</span><br><span class="line">      component,</span><br><span class="line">      transaction.reconcileTransaction,</span><br><span class="line">      updateBatchNumber,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (markerName) &#123;</span><br><span class="line">      <span class="built_in">console</span>.timeEnd(markerName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果存在组件回调函数，将其放入回调队列中</span></span><br><span class="line">    <span class="keyword">if</span> (callbacks) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; callbacks.length; j++) &#123;</span><br><span class="line">        transaction.callbackQueue.enqueue(</span><br><span class="line">          callbacks[j],</span><br><span class="line">          component.getPublicInstance(),</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="performUpdateIfNecessary"><a href="#performUpdateIfNecessary" class="headerlink" title="performUpdateIfNecessary"></a>performUpdateIfNecessary</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">performUpdateIfNecessary: <span class="function"><span class="keyword">function</span>(<span class="params">transaction</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>._pendingElement != <span class="literal">null</span>) &#123;</span><br><span class="line">      ReactReconciler.receiveComponent(</span><br><span class="line">        <span class="keyword">this</span>,</span><br><span class="line">        <span class="keyword">this</span>._pendingElement,</span><br><span class="line">        transaction,</span><br><span class="line">        <span class="keyword">this</span>._context,</span><br><span class="line">      );</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>._pendingStateQueue !== <span class="literal">null</span> || <span class="keyword">this</span>._pendingForceUpdate) &#123;</span><br><span class="line">      <span class="comment">//注意，调用了this.updateComponent方法，但是element以及content都是component自己的即_currentElement，_context</span></span><br><span class="line">      <span class="keyword">this</span>.updateComponent(</span><br><span class="line">        transaction,</span><br><span class="line">        <span class="keyword">this</span>._currentElement,</span><br><span class="line">        <span class="keyword">this</span>._currentElement,</span><br><span class="line">        <span class="keyword">this</span>._context,</span><br><span class="line">        <span class="keyword">this</span>._context,</span><br><span class="line">      );</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>._updateBatchNumber = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><code>updateComponent</code>会依次执行组件的生命周期，如componentWillReceiveProps，shouldComponentUpdate，componentWillUpdate，render，componentDidUpdate等。</p>
+<h4 id="transaction-事务"><a href="#transaction-事务" class="headerlink" title="transaction 事务"></a>transaction 事务</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;pre&gt;</span></span><br><span class="line"><span class="comment"> *                       wrappers (injected at creation time)</span></span><br><span class="line"><span class="comment"> *                                      +        +</span></span><br><span class="line"><span class="comment"> *                                      |        |</span></span><br><span class="line"><span class="comment"> *                    +-----------------|--------|--------------+</span></span><br><span class="line"><span class="comment"> *                    |                 v        |              |</span></span><br><span class="line"><span class="comment"> *                    |      +---------------+   |              |</span></span><br><span class="line"><span class="comment"> *                    |   +--|    wrapper1   |---|----+         |</span></span><br><span class="line"><span class="comment"> *                    |   |  +---------------+   v    |         |</span></span><br><span class="line"><span class="comment"> *                    |   |          +-------------+  |         |</span></span><br><span class="line"><span class="comment"> *                    |   |     +----|   wrapper2  |--------+   |</span></span><br><span class="line"><span class="comment"> *                    |   |     |    +-------------+  |     |   |</span></span><br><span class="line"><span class="comment"> *                    |   |     |                     |     |   |</span></span><br><span class="line"><span class="comment"> *                    |   v     v                     v     v   | wrapper</span></span><br><span class="line"><span class="comment"> *                    | +---+ +---+   +---------+   +---+ +---+ | invariants</span></span><br><span class="line"><span class="comment"> * perform(anyMethod) | |   | |   |   |         |   |   | |   | | maintained</span></span><br><span class="line"><span class="comment"> * +-----------------&gt;|-|---|-|---|--&gt;|anyMethod|---|---|-|---|-|--------&gt;</span></span><br><span class="line"><span class="comment"> *                    | |   | |   |   |         |   |   | |   | |</span></span><br><span class="line"><span class="comment"> *                    | |   | |   |   |         |   |   | |   | |</span></span><br><span class="line"><span class="comment"> *                    | |   | |   |   |         |   |   | |   | |</span></span><br><span class="line"><span class="comment"> *                    | +---+ +---+   +---------+   +---+ +---+ |</span></span><br><span class="line"><span class="comment"> *                    |  initialize                    close    |</span></span><br><span class="line"><span class="comment"> *                    +-----------------------------------------+</span></span><br><span class="line"><span class="comment"> * &lt;/pre&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<p>将要执行的method使用wrapper封装起来，再通过暴露的<code>perform</code>方法执行<br>一组<code>initialize</code>及<code>close</code>方法称为一个<code>wrapper</code>可以多个叠加<br>执行顺序：<br>所有wrapper的<code>initialize()</code>  =&gt;  <code>perform()</code>  =&gt;  所有wrapper的<code>close（）</code></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h3 id="✨感谢-✨"><a href="#✨感谢-✨" class="headerlink" title="✨感谢 ✨"></a>✨感谢 ✨</h3><blockquote>
+<p><a href="https://juejin.im/post/5b87d14e6fb9a01a18268caf" target="_blank" rel="noopener">https://juejin.im/post/5b87d14e6fb9a01a18268caf</a><br><a href="https://www.jianshu.com/p/aa6744fdb845" target="_blank" rel="noopener">https://www.jianshu.com/p/aa6744fdb845</a><br><a href="https://juejin.im/post/5a393cf9f265da432c23fb3b" target="_blank" rel="noopener">https://juejin.im/post/5a393cf9f265da432c23fb3b</a></p>
+</blockquote>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/React/"># React</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <!-- <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/09/hello-world/">Hello World</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/09/%E5%9B%BE%E8%A7%A3http%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">🤓《图解http》读书笔记</a>
+            
+        </section> -->
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© chiller | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
