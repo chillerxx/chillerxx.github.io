@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="chiller">
+
+
+
+
+
+<title>🍄 css学习整理之float | Chiller&#39;s blog</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Chiller&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Chiller&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title">🍄 css学习整理之float</h2>
+        
+        <section class="post-content">
+            <h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p><strong>概念</strong>：<br>浮动元素脱离普通流，然后按照指定方向，向左或者向右移动，碰到父级边界或者另外一个浮动元素停止。</p>
+<p><strong>特性</strong>：<br>支持<code>inline-block</code>的全部特性，并且IE6/7支持，其实就是个带有方位的<code>display:inline-block</code>属性：</p>
+<ul>
+<li><p>未设置宽度时，内容撑开宽度。</p>
+</li>
+<li><p>行内支持宽高。</p>
+</li>
+<li><p>非独占一行，块在一行显示（浮动元素自身会生成一个块级框，不论这个元素本身是什么，使浮动元素周围的外边距不会合并）。</p>
+</li>
+<li><p>包裹性：浮动元素的包含块是指其最近的块级祖先元素。</p>
+</li>
+<li><p>破坏性：浮动破坏了正常的行框，</p>
+</li>
+</ul>
+<p><strong>重叠</strong>：<br>浮动元素与正常流元素重叠</p>
+<ul>
+<li><p>行内框与一个浮动元素重叠时，其边框、背景和内容都在该浮动元素之上显示</p>
+</li>
+<li><p>块框与一个浮动元素重叠时，其边框和背景在该浮动元素之下显示，而内容在浮动元素之上显示</p>
+</li>
+</ul>
+<p><strong>浮动排列方式</strong>：<br>某个div元素A是浮动的，如果A元素上一个元素也是浮动的，那么A元素会跟随在上一个元素的后边(如果一行放不下这两个元素，那么A元素会被挤到下一行)；</p>
+<p>如果A元素上一个元素是普通流中的元素，那么A的相对垂直位置（还是竖向排列）不会改变，也就是说A的顶部总是和上一个元素的底部对齐。</p>
+<p><strong>haslayout</strong>：<br>IE6-7使用布局的概念来控制元素的尺寸和定位，那些拥有布局（have layout）的元素负责本身及其子元素的尺寸设置和定位。如果一个元素的 <code>hasLayout</code> 为<code>false</code>，那么它的尺寸和位置由最近拥有布局的祖先元素控制。</p>
+<p><strong>BFC</strong>：<br>创建了<code>BFC</code>的元素就是一个独立的盒子，里面的子元素不会在布局上影响外面的元素，反之亦然，同时<code>BFC</code>任然属于文档中的普通流，所以可以清楚浮动带来的影响。</p>
+<h2 id="清除浮动带来的影响"><a href="#清除浮动带来的影响" class="headerlink" title="清除浮动带来的影响"></a>清除浮动带来的影响</h2><p><strong>一.通过添加额外元素设置clear属性</strong></p>
+<p>注意：<code>clear</code>属性只能影响使用清除的元素本身，不能影响其他元素。</p>
+<p><strong>1）</strong>添加额外标签  浮动元素末尾添加一个空的标签例如 ：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>此为浮动元素<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">”clear:both”</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>因为父级元素需要包含末尾添加的元素（不为浮动流，是普通流） 则父级高度就不会为零  不会塌陷。</p>
+<p>但是会添加很多无意义的空标签，有违结构与表现的分离。</p>
+<p><strong>2）</strong>使用 <code>:after</code>伪元素，由于IE6-7不支持<code>:after</code>，使用 <code>zoom:1</code> 触发 <code>hasLayout</code>。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.clear</span><span class="selector-pseudo">:after</span>&#123;<span class="attribute">content</span>:<span class="string">""</span>; <span class="attribute">display</span>: block; <span class="attribute">clear</span>: both;&#125;</span><br><span class="line">.clear&#123; *zoom: 1;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>消除原因类似于1），都是在末尾加了个元素，<code>display:block</code>  因为<code>clear</code>属性只应用于块级元素且希望生成的元素占满一行。</p>
+<p><strong>二.触发BFC（块级格式化上下文），不支持BFC的，则触发haslayout</strong></p>
+<p>触发包含块的BFC十七包含浮动元素，对于IE6/7则触发包含块的<code>haslayout</code>，则浮动元素被layout元素自动包含。</p>
+<p><strong>1）</strong>父元素设置<code>overflow：hidden</code>, 在IE6中还需要触发<code>hasLayout</code> ，例如<code>zoom:1</code>;</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"overflow:hidden; *zoom=1;"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>此为浮动元素<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>触发BFC的其他属性：</p>
+<ol>
+<li>float的值不为none。</li>
+<li>overflow的值不为visible。</li>
+<li>display的值为table-cell, table-caption, inline-block中的任何一个。</li>
+<li>position的值不为relative和static。</li>
+</ol>
+<p>触发<code>haslayout</code>的属性， <code>float：left</code>   |  <code>position：absolute</code>   |  <code>display：inline-block</code>  |  <code>zoom:1</code>  | <code>height/width</code><br>不包括<code>overflow</code>。</p>
+<h2 id="✨感谢-✨"><a href="#✨感谢-✨" class="headerlink" title="✨感谢 ✨"></a>✨感谢 ✨</h2><blockquote>
+<p><a href="http://www.cnblogs.com/xiaohuochai/p/5248981.html" target="_blank" rel="noopener">http://www.cnblogs.com/xiaohuochai/p/5248981.html</a><br><a href="http://www.cnblogs.com/lhb25/p/story-of-clear-float.html" target="_blank" rel="noopener">http://www.cnblogs.com/lhb25/p/story-of-clear-float.html</a></p>
+</blockquote>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© chiller | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

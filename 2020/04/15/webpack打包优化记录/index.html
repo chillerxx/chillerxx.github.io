@@ -12,7 +12,7 @@
 
 
 
-<title>Hello World | Chiller&#39;s blog</title>
+<title>👏 webpack打包优化记录 | Chiller&#39;s blog</title>
 
 
 
@@ -163,14 +163,14 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Hello World</h1>
+            <h1 class="post-title">👏 webpack打包优化记录</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: &nbsp; <a href="#">2020-03-09&nbsp;
+                        Date: &nbsp; <a href="#">2020-04-15&nbsp;
                         </span>
                     
                     
@@ -179,19 +179,19 @@
         </header>
 
         <div class="post-content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+            <h3 id="Webpack-打包优化"><a href="#Webpack-打包优化" class="headerlink" title="Webpack 打包优化"></a>Webpack 打包优化</h3><p>webpack-visualizer: 可视化并分析你的 bundle，检查哪些模块占用空间，哪些可能是重复使用的。<br>webpack-bundle-analyzer：一个 plugin 和 CLI 工具，它将 bundle 内容展示为一个便捷的、交互式、可缩放的树状图形式。</p>
+<p>webpack-bundle-analyzer<br>查看整个项目的体积结构对比，它是以treemap的形式展现出来<br>IgnorePlugin<br>webpack打包时移除这部分内容会让打包文件的体积有所减小<br>moment.js这个日期处理库  所有的locale文件都被引入<br>通过CDN引用  大型库外链<br>在html中添加script引用 jquery<br>UglifyJsPlugin<br>MiniCssExtractPlugin</p>
+<p>CommonsChunkPlugin   3的写法<br>在 webpack &lt; 4 的版本中，通常将 vendor 作为一个单独的入口起点添加到 entry 选项中，以将其编译为一个单独的文件（与 CommonsChunkPlugin 结合使用）。</p>
+<p>而在 webpack 4 中不鼓励这样做。而是使用 optimization.splitChunks 选项，将 vendor 和 app(应用程序) 模块分开，并为其创建一个单独的文件。不要 为 vendor 或其他不是执行起点创建 entry。<br>通过执行额外的算法任务，来优化输出结果的体积和加载性能。这些优化适用于小型代码库，但是在大型代码库中却非常耗费性能</p>
+<p>4换了写法  splitChunks  第三方库从主要的包里分离出来<br>开启Gzip压缩<br>按需加载<br>路由懒加载   Loadable  react-loadable    React.lazy   ensure<br>分片打包  实现按需加载</p>
+<p>使用 DllPlugin 为更改不频繁的代码生成单独的编译结果。这可以提高应用程序的编译速度，尽管它增加了构建过程的复杂度</p>
+<p>Mode</p>
+<p>Antd  icon    core-js</p>
+<p>大型应用程序上运行 tree shaking 时，会对 bundle 产生显著的体积优化<br>在打包时忽略没有用到的代码</p>
+<p>✨感谢✨</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/cmd1994" target="_blank" rel="noopener">https://blog.csdn.net/cmd1994</a></p>
+</blockquote>
 
         </div>
 
@@ -201,6 +201,10 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/webpack/"># webpack</a>
+                    
+                        
                 </span>
             </div>
             <div>
@@ -211,10 +215,8 @@
         </section>
         <!-- <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/05/19/README-CN/">test</a>
             
-            
-            <a class="next" rel="next" href="/2019/10/09/%E7%90%86%E8%A7%A3setState/">🌸 理解setState</a>
+            <a class="next" rel="next" href="/2019/12/21/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3ES6%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">🤓《深入理解ES6》读书笔记</a>
             
         </section> -->
     </article>

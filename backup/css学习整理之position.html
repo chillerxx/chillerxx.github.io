@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="chiller">
+
+
+
+
+
+<title>🍄 css学习整理之position | Chiller&#39;s blog</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Chiller&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Chiller&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title">🍄 css学习整理之position</h2>
+        
+        <section class="post-content">
+            <h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="position的几个属性值"><a href="#position的几个属性值" class="headerlink" title="position的几个属性值"></a>position的几个属性值</h3><ul>
+<li><p>static —— 默认值。没有定位，出现在正常文档流中</p>
+</li>
+<li><p>absolute —— 绝对定位，相对于最近的已定位祖先元素，如果元素没有已定位的祖先元素，那么它的位置相对于初始包含块document</p>
+</li>
+<li><p>relative —— 相对定位，相对于其正常位置进行定位</p>
+</li>
+<li><p>fixed —— 绝对定位，相对于浏览器窗口进行定位</p>
+</li>
+</ul>
+<p><strong>脱离文档流：</strong><br>除 <code>static  relative</code>属性值之外，<code>absolute fixed</code>都会使元素脱离文档流（<code>float</code>也会导致元素脱离文档流）。</p>
+<p><strong>定位后的默认位置：</strong><br><code>Fixed</code>和<code>absolute</code>属性后的默认位置都是在原地，只是紧跟后面折正常文档流元素会顶上来，被定位元素盖住。</p>
+<h3 id="四个偏移属性"><a href="#四个偏移属性" class="headerlink" title="四个偏移属性"></a>四个偏移属性</h3><p>这4个偏移特性来描述元素4个边的放置位置，那么元素的高度和宽度将由这些偏移隐含确定，元素将会拉伸。</p>
+<p><code>top</code>描述了定位元素上外边界离其包含块的顶端有多远。</p>
+<p>正值，会把定位元素的上外边距边界远离包含块上边界，负值，则会把定位元素的上外边距移到其包含块的顶端之上。</p>
+<p>left描述了定位元素的左外边距边界距离其包含块左边界有多远。</p>
+<p>正值远离包含块左边界， 负值则把定位元素的左外边距移到包含块左边界。</p>
+<p>[注意]定位元素的边界是指定位元素<code>margin</code>外侧的边界；包含块的包含区域是指包含块<code>border</code>内侧的<code>padding+content</code>区域。</p>
+<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p><strong>absolute定位</strong><br>1.破坏性<br>元素绝对定位后，会脱离文档流，高宽都塌陷，<code>float</code>是高度塌陷。</p>
+<p>若父级为块元素，父级不设置高度，则父级高度塌陷 (高度为子元素高度，但是脱离文档流则无高度，宽度默认为父级的100%)，</p>
+<p>若父级为行内元素，无内容，则父级高宽都将塌陷（内联元素内容撑开宽度）。</p>
+<p>2.包裹性<br>元素绝对定位后，会为其后代元素建立一个包含块。</p>
+<p>若父级为块元素，使内容可以撑开宽度。</p>
+<p>若父级为行内元素，使支持宽高。 </p>
+<p>[注意]浮动的包含块会延伸，进而包含所有后代浮动元素，但绝对定位的包含块并不会包含后代的定位元素，只是作为后代定位元素的定位父级。</p>
+<p>3.去浮动<br>元素绝对定位后，元素原来的浮动效果将失效。这两个属性是互斥的，浮动是干不过绝对定位的。</p>
+<p>4.层级<br>定位元素之间有层级，默认后者高于前者，可以使用<code>z-index</code>改变层级。</p>
+<p><strong>relative定位</strong><br>1.属性值<br>相对定位的数值型偏移属性是相对于自身的，但其百分比却是相对于包含块的。</p>
+<p>百分比相对于包含块的高度(只是高度<code>height</code>，不包括纵向<code>padding</code>和<code>border</code>)，<code>left</code>和<code>right</code>百分比相对于包含块的宽度(只是宽度<code>width</code>，不包括横向<code>padding</code>和<code>border</code>)</p>
+<p>2.限制绝对定位<br>一般地，给绝对定位元素限制范围时，为其父级元素设置相对定位<code>relative</code>，因为相对定位元素不脱离文档流。</p>
+<p>[注意]相对定位元素可以限制绝对定位，但不能限制固定定位，因为固定定位是相对于文档（视窗）定位的。</p>
+<p>3.不会改变元素本身的特性。</p>
+<p><strong>fixed定位</strong><br>特性同绝对定位，但始终相对于视窗偏移。<br>[注意]IE6-浏览器不支持。</p>
+<p><code>全屏遮罩</code><br>当页面内容超出页面容器大小出现滚动条时，此时使用<code>absolute</code>全屏遮罩会出现滚动条以外部分没有遮住的情况。绝对定位相对于文档偏移，文档的高度和可视区域一致，也就是与视窗一致，是不包括滚动条以外部分的。<br>这时，只能使用<code>fixed</code>固定定位来实现全屏遮罩效果。</p>
+<h2 id="✨感谢-✨"><a href="#✨感谢-✨" class="headerlink" title="✨感谢 ✨"></a>✨感谢 ✨</h2><blockquote>
+<p><a href="http://www.cnblogs.com/xiaohuochai/p/5312917.html" target="_blank" rel="noopener">http://www.cnblogs.com/xiaohuochai/p/5312917.html</a></p>
+</blockquote>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© chiller | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
