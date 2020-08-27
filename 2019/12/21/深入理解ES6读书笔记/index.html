@@ -179,7 +179,7 @@
         </header>
 
         <div class="post-content">
-            <h2 id="ES6"><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h2><p>Let   var  const<br>JavaScript有一个机制叫“预解析”，也可以叫“提升（Hoisting）机制”<br>• 函数提升优先于变量提升，<br>函数提升会把整个函数挪到作用域顶部（解决函数间互相调用的情况）<br>变量提升只会把声明挪到作用域顶部<br>• var 存在提升，我们能在声明之前使用。<br>let、const 因为暂时性死区的原因，不能在声明前使用<br>• var 在全局作用域下声明变量会导致变量挂载在 window 上，其他两者不会<br>• let 和 const 作用基本一致，但是后者声明的变量不能再次赋值<br>• 暂时性死区  let和const声明绑定在块级作用域内，形成了封闭作用域。</p>
+            <h2 id="ES6笔记"><a href="#ES6笔记" class="headerlink" title="ES6笔记"></a>ES6笔记</h2><p>Let   var  const<br>JavaScript有一个机制叫“预解析”，也可以叫“提升（Hoisting）机制”<br>• 函数提升优先于变量提升，<br>函数提升会把整个函数挪到作用域顶部（解决函数间互相调用的情况）<br>变量提升只会把声明挪到作用域顶部<br>• var 存在提升，我们能在声明之前使用。<br>let、const 因为暂时性死区的原因，不能在声明前使用<br>• var 在全局作用域下声明变量会导致变量挂载在 window 上，其他两者不会<br>• let 和 const 作用基本一致，但是后者声明的变量不能再次赋值<br>• 暂时性死区  let和const声明绑定在块级作用域内，形成了封闭作用域。</p>
 <p>ES6中对块级作用域做了进一步强化<br>块级声明用于声明在指定块的作用域之外无法访问的变量<br>块中（字符 { 和 } 之间的区域）<br>比如 if 和 for 在ES6中也被定义成一个块级。</p>
 <p>let声明  把变量的作用域限制在当前代码块中<br>声明不会被提升  所以可以防止变量泄露<br>禁止在同一个作用域下重复声明</p>
 <p>循环中使用闭包解决 <code>var</code> 定义函数<br>With var i in every setTimeout callback means the same variable<br>With let  i in every setTimeout callback means a different variable</p>
