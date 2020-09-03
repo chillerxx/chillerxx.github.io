@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="chiller">
+
+
+
+
+
+<title>webpack | Chiller&#39;s blog</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Chiller&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Chiller&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Blogs</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">webpack</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: &nbsp; <a href="#">2020-09-02&nbsp;
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            // yarn add babylon babel-traverse babel-core babel-preset-env
+
+const fs = require('fs');
+const path = require('path');
+const babylon = require('babylon');
+const traverse = require('babel-traverse').default;
+const { transformFromAst } = require('babel-core');
+
+//返回了一个对象，对象中包含了当前文件路径、当前文件依赖和当前文件转换后的代码
+function readCode(filePath) {
+  const content = fs.readFileSync(filePath, 'utf-8');
+  // 生成AST （抽象语法树
+  const ast = babylon.parse(content, { sourceType: 'moudle' });
+  // 寻找当前文件的依赖关系
+  const dependencies = [];
+  traverse(ast, {
+    // 转换成AST结构 里面有个字段type 描述节点类型 当遍历到这个节点时 用以下方法
+    // 这个节点中定义了处理import语句的具体操作
+    ImportDeclaration: ({ node })=>{
+      dependencies.push(node.source.value);
+    }
+  })
+  // 通过AST将代码装为ES5
+  const { code } = transformFromAst(ast, null, { presets: ['env'] })
+  return {
+    filePath,
+    dependencies,
+    code
+  }
+}
+
+//分析入口文件的依赖  识别js和css文件
+function getDependencies(entry) {
+  const entryObject = readCode(entry);
+  // 一开始这个数组中只有入口文件，
+  // 在遍历的过程中，如果入口文件有依赖其他的文件，就会被 push 到这个数组中
+  const dependencies = [entryObject];
+  // 遍历文件获取依赖
+  for (const asset of dependencies) {
+    // 获取文件目录
+    const dirname = path.dirname(asset.filePath);
+    asset.dependencies.forEach(relativePath => {
+      // 获取绝对路径
+      const absolutePath = path.join(dirname, relativePath)
+      if(/\.css$/.test(absolutePath)){
+        // 是css文件  就将代码插入到 `style` 标签中
+        const content = fs.readFileSync(absolutePath, 'utf-8')
+        const code = `
+          const style = document.createELement('style')
+          style.innerText = ${JSON.stringify(content).replace(/\\r\\n/g, '')}
+          document.head.appendChild(style)
+        `
+        dependencies.push({
+          filePath: absolutePath,
+          relativePath,
+          dependencies: [],
+          code
+        })
+      }else{
+        // 是js文件 需要继续查找是否有依赖关系
+        const child = readCode(absolutePath)
+        child.relativePath = relativePath
+        dependencies.push(child)
+
+      }
+    })
+  }
+  return dependencies
+}
+
+// 重写require函数（因为浏览器不能识别commonjs语法） 输出bundle
+function bundle(dependencies, entry) {
+  let modules = ''
+  // 构建函数参数
+  dependencies.forEach(dep => {
+    const filePath = dep.relativePath || entry
+    modules += `'${filePath}':( function(module, exports, require){ ${dep.code} } )`
+  })
+  // 构建require 函数，目的是为了获取模块暴露出来的内容
+  const result = `
+    (
+      function(modules){
+        function require(id){
+          const module = {exports: {}}
+          modules[id](module, module.exports. require)
+          return module.exports
+        }
+        require('${entry}')
+      }
+    )({${modules})
+  `
+  fs.writeFileSync('./bundle.js', result)
+}
+
+// result详解
+;(function(modules){
+  function require(id) {
+    const module = {exports: {}}
+    modules[id](module, module.exports, require)
+    return module.exports
+  }
+  require('./entry.js')
+})({
+  './entry.js': function(module, exports, require) {
+    var _a = require('./a.js')
+    // ...
+  },
+  './a.js': function(module, exports, require){
+    var a = 1
+    exports.default = a
+    // ...
+  }
+  // ...
+});
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <!-- <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/04/15/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E8%AE%B0%E5%BD%95/">👏 webpack打包优化记录</a>
+            
+        </section> -->
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© chiller | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
