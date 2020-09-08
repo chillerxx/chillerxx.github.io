@@ -12,7 +12,7 @@
 
 
 
-<title>Archives: 2020 | Chiller&#39;s blog</title>
+<title>算法 | Chiller&#39;s blog</title>
 
 
 
@@ -94,49 +94,116 @@
     }
 </script>
         <div class="main">
-            <div class="post-wrap archive">
+            <div class="container">
     
     
-        
 
-        
-            <h3>2020</h3>
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/09/04/%E7%AE%97%E6%B3%95/">算法</a>
-            <span class="archive-item-date">2020-09-04</span>
-        </article>
     
-        
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">算法</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: &nbsp; <a href="#">2020-09-04&nbsp;
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            // 二分查找
+function binarySearch(arr, target){
+  let max = arr.length - 1;
+  let min = 0;
+  while (min <= max) {
+    let mid = Math.floor((max + min)/2)
+    if(target < arr[mid]){
+      max = mid - 1
+    }else if(target > arr[mid]){
+      min = mid + 1
+    }else{
+      return mid
+    }
+  }
+  return -1
+}
+
+//栈
+class Stack{
+  constructor(){
+    this.stack = []
+  }
+  push(item){
+    this.stack.push(item)
+  }
+  pop(){
+    this.stack.pop()
+  }
+  peek(){
+    return this.stack[this.getCount()-1]
+  }
+  getCount(){
+    return this.stack.length
+  }
+  isEmpty(){
+    return this.getCount === 0
+  }
+}
+
+//单链队列
+class Queue{
+  constructor(){
+    this.queue = []
+  }
+  enQueue(item){
+    this.queue.push(item)
+  }
+  deQueue(){
+    return this.queue.shift()
+  }
+  getHeader(){
+    return this.queue.length
+  }
+  isEmpty(){
+    return this.getLength() === 0
+  }
+}
+
+//循环队列
+
+
+
+        </div>
 
         
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/09/03/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
-            <span class="archive-item-date">2020-09-03</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/09/02/webpack/">webpack</a>
-            <span class="archive-item-date">2020-09-02</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/04/15/webpack%E6%89%93%E5%8C%85%E4%BC%98%E5%8C%96%E8%AE%B0%E5%BD%95/">👏 webpack打包优化记录</a>
-            <span class="archive-item-date">2020-04-15</span>
-        </article>
-    
-    
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <!-- <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/09/03/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            
+        </section> -->
+    </article>
 </div>
+
         </div>
         <footer id="footer" class="footer">
     <div class="copyright">
