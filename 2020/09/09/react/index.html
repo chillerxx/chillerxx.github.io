@@ -117,7 +117,26 @@
         </header>
 
         <div class="post-content">
-            
+            // js对象模拟dom
+const ul = {
+  tag: 'ul',
+  props: {
+    class: 'list'
+  },
+  children: {
+    tag: 'li',
+    children: '1'
+  }
+}
+
+// 上述对应dom
++
+<ul class='list'>
+  <li>1</li>
+</ul>
+
+
+
         </div>
 
         
