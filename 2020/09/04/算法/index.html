@@ -120,7 +120,7 @@
             /*
  * @Author: your name
  * @Date: 2020-09-04 16:48:08
- * @LastEditTime: 2020-09-16 13:32:56
+ * @LastEditTime: 2020-09-21 10:24:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /blog/source/_posts/算法.js
@@ -163,6 +163,9 @@ class Stack{
     return this.getCount === 0
   }
 }
+
+// 栈应用
+// 对称性
 
 //单链队列
 class Queue{
@@ -262,11 +265,11 @@ function sum(nums, target){
  * 真题描述：给你两个有序整数数组 nums1 和 nums2，
  * 请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。
  * 说明: 初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。
- * 你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素。
+ * 假设 nums1 有足够的空间
+ *（空间大小大于或等于 m + n）来保存 nums2 中的元素。
  *
  * 双指针法
  */
-
  function merge(nums1, m, nums2, n){
   let i = m-1, j = n -1, k = m+n-1
   while (i>=0 && j>=0) {
@@ -280,15 +283,77 @@ function sum(nums, target){
       k--
     }
   }
-
   while(j>=0){
     nums2[k] = nums2[j]
     j--
   }
-
  }
 
+/**
+ * 真题描述：给你一个包含 n 个整数的数组 nums，
+ * 判断 nums 中是否存在三个元素 a，b，c ，
+ * 使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+ *
+ * 固定其中一个数，在剩下的数中寻找是否有两个数和这个固定数相加是等于0的
+ * 双指针法必须用在有序数组
+ */
 
+function threeSunm (nums){
+  let res = []
+   //排序
+  nums = nums.sort((a, b)=> a-b)
+  const len = nums.length
+  // 遍历到倒数第三个就可以了
+  for (let i = 0; i < len-2; i++) {
+    // 左指针
+    let j=i+1
+    // 右指针
+    let k=len-1
+    // 如果当前遍历的值和前一个相同
+    if(i>0&&nums[i]===nums[i-1]) continue
+    while(j<k){
+      // 相加之和大于0，说明右侧的数偏大了，右指针左移,反之
+      if(nums[i]+nums[k]+nums[j]<0){
+        j++
+        while(j<k&&nums[j]===nums[j-1]) j++
+
+      }else if(nums[i]+nums[k]+nums[j]>0){
+        k--
+        while(j<k&&nums[k]===nums[k-1]) k--
+
+      }else{
+        res.push(nums[i],nums[j],nums[k])
+        k--
+        j++
+
+        while(j<k&&nums[j]===nums[j-1]) j++
+        while(j<k&&nums[k]===nums[k-1]) k--
+      }
+    }
+  }
+  return res
+}
+
+function flat(arr){
+  let isDeep = arr.some(item => item instanceof Array)
+  if (!isDeep) {
+    return arr
+  }
+  // Array.prototype.concat.apply([], arr)
+  // apply第二个参数就是把所有参数放到一个数组里 等同于以下
+  const res = [].concat(...arr)
+  return flat(res)
+}
+
+function unique(arr){
+  const res = []
+  arr.forEach(item =>{
+    if(res.indexOf(item)<0){
+      res.push(item)
+    }
+  })
+  return res
+}
         </div>
 
         
