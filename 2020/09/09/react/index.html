@@ -97,6 +97,68 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
@@ -120,7 +182,7 @@
             /*
  * @Author: your name
  * @Date: 2020-09-09 17:42:47
- * @LastEditTime: 2020-09-23 14:42:25
+ * @LastEditTime: 2020-09-25 15:49:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /blog/source/_posts/react.js
@@ -176,6 +238,64 @@ class Son extends React.Component{
   }
 }
 //Son.contextType = myContext 等同于static写法
+
+// HOC
+const Mouse = (Component)=>{
+  class MouseComponent extends Component{
+    state = { x: 0, y: 0}
+    render(){
+      return(
+        <div>
+          /** 一些公用逻辑 */
+          <Component {...this.props} mouse={this.state}/>
+        </div>
+      )
+    }
+  }
+  return MouseComponent
+}
+export default Mouse(App)
+
+//个性化逻辑
+const App =(props)=>{
+  const {x, y} = props.mouse
+  return (
+    <div>
+      <p>{props.a}</p>
+      <h1>{x}, {y}</h1>
+    </div>
+  )
+}
+
+
+// render props
+class Mouse extends Component{
+  state = { x: 0, y: 0}
+  render(){
+    return(
+      <div>
+        /** 一些公用逻辑 */
+        {this.props.render(this.state)}
+      </div>
+    )
+  }
+}
+Mouse.propTypes = {
+  render: PropTypes.func.isRequired
+}
+export default Mouse
+
+//个性化逻辑
+const App = (props) =>{
+  return(
+    <div>
+      <p>{props.a}</p>
+      <Mouse render={
+        ({x, y})=><h1>{x}, {y}</h1>
+      }/>
+    </div>
+  )
+}
         </div>
 
         
